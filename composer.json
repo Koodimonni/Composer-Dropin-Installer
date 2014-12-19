@@ -1,0 +1,20 @@
+{
+    "name": "koodimonni/composer-dropin-installer",
+    "description": "Define custom installation path for packages",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Onni Hakala",
+            "email": "onni@koodimonni.fi"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Koodimonni\\Composer\\": "src"
+        }
+    }
+}
