@@ -2,6 +2,8 @@
 This composer plugin helps you to move your composer packaged files where you want them to be.
 Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects.
 
+I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```/languages```. See how you can [update wordpress languages with composer](http://languages.koodimonni.fi).
+
 ##How to use it
 These are typical additions I make into my composer.json:
 ```json
@@ -35,6 +37,7 @@ These are typical additions I make into my composer.json:
 }
 ```
 
+###Follow the baby steps
 1. Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
 ```json
 "require": {
@@ -64,15 +67,17 @@ These are typical additions I make into my composer.json:
 
 ##But how about the impossible looking syntax?
 Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{files}"```
+
 **Path** is relative path to destination folder.
+
 **Directive** is one of:
 * package -  eg. package:koodimonni-language/fi
 * vendor - eg vendor:koodimonni-language
 * type - eg. type:wordpress-language
 
-Files is optional and by default this will move all files.
+**Files** is optional and by default it will move all files.
 In some cases it would be nice to move just one file from the package.
-I found out that wordpress dropins needed just that.
+I found out that *Wordpress dropins* needed just that. Good example is this one: [Domain Mapping](https://wordpress.org/plugins/wordpress-mu-domain-mapping/) or object-cache.php.
 
 ##Some Notices
 * Script works nicely together with composer/installers
@@ -89,4 +94,4 @@ phpunit.xml
 * Script requires unix filesystem (OS X,Linux)
 
 ##Changelog
-0.1 Initial release
+* 0.1 Initial release
