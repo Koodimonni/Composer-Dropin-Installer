@@ -8,8 +8,9 @@ use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
-use Composer\Plugin\PluginEvents;
-use Composer\Plugin\PreFileDownloadEvent;
+
+#Subscribe to Package events
+use Composer\Script\PackageEvent;
 
 use Composer\Installer\LibraryInstaller;
 
@@ -34,33 +35,39 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   protected $composer;
   protected $io;
 
+  /**
+   * Composer plugin default behaviour
+   */
   public function activate(Composer $composer, IOInterface $io)
   {
       $this->composer = $composer;
       $this->io = $io;
   }
 
+  /**
+   * Subscribe to package changed events
+   * TODO: It might be good idea to gather all changes into static variable
+   * and then do all of them after install/update finishes
+   * This way some extra ordinary dropins would behave more predictable
+   */
   public static function getSubscribedEvents()
   {
       return array(
-          PluginEvents::PRE_FILE_DOWNLOAD => array(
-              array('onPreFileDownload', 0)
+          "post-package-install" => array(
+              array('onPackageChanged', 0)
+          ),
+          "post-package-update" => array(
+              array('onPackageChanged', 0)
           ),
       );
   }
 
-  public function onPreFileDownload(PreFileDownloadEvent $event)
-  {
-      var_dump($event);
-      exit(0);
-  }
-
   /**
-   * Call this function to move files defined in composer.json -> extra -> dropin-paths
+   * Hook up this function to package install to move files defined in composer.json -> extra -> dropin-paths
    * Run this command as post-install-package and post-update-package command
    * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
    */
-  public static function installPackage(Event $event){
+  public static function onPackageChanged(PackageEvent $event){
     $io = $event->getIO();
 
     #Locate absolute urls
@@ -95,7 +102,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     }
 
     try {
-      //This is not absolute path
+      //This is not an absolute path
       $src = $installer->getInstallPath($package);
     } catch (\InvalidArgumentException $e) {
       // We will end up here if composer/installers doesn't recognise the type
@@ -257,21 +264,5 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    */
   private static function isFileIgnored($filename){
     return in_array(strtolower($filename),Dropin::$ignoreList);
-  }
-
-  /**
-   * TODO: finish it
-   * Download single file.
-   * Try to guess from modified time header and content length if they are updated or not.
-   * Then only download files which haven't changed.
-   */
-  private static function downloadResource($src,$dest,$cacheDir=null) {
-    return true;
-    if(!file_exists($cacheDir)){
-      mkdir($cacheDir);
-      mkdir($cacheDir."/files");
-    }
-    var_dump(file_get_contents($src));
-    var_dump($http_response_header);
   }
 }
