@@ -1,7 +1,8 @@
 {
     "name": "koodimonni/composer-dropin-installer",
-    "description": "Do what the fuck you want with your composer packages aka. Composer Dropin installer.",
+    "description": "Do what the fuck you want with your composer packages aka. Composer Dropin installer. Install packages or part of packages into custom paths without overwriting existing stuff.",
     "license": "WTFPL",
+    "type": "composer-plugin",
     "authors": [
         {
             "name": "Onni Hakala",
@@ -10,11 +11,14 @@
     ],
     "minimum-stability": "dev",
     "require": {
-
+        "composer-plugin-api": "1.0.0"
     },
     "autoload": {
         "psr-4": {
             "Koodimonni\\Composer\\": "src"
         }
+    },
+    "extra": {
+        "class": "Koodimonni\\Composer\\Dropin"
     }
 }

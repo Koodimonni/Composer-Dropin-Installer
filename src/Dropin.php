@@ -4,12 +4,20 @@ namespace Koodimonni\Composer;
 
 use Composer\Script\Event;
 
+use Composer\Composer;
+use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\IO\IOInterface;
+use Composer\Plugin\PluginInterface;
+use Composer\Plugin\PluginEvents;
+use Composer\Plugin\PreFileDownloadEvent;
+
 use Composer\Installer\LibraryInstaller;
 
 #Be compliant with composer/installers
 use Composer\Installers\Installer;
 
-class Dropin {
+
+class Dropin implements PluginInterface, EventSubscriberInterface {
   /**
    * List of files which will not be moved no matter what
    * This might be useless, but it gives me peace of mind.
@@ -21,7 +29,31 @@ class Dropin {
                                     ,"readme.md","readme.txt","license","phpunit.xml");
 
   // Cache results of dropin-paths into here and use it only from getter function getPaths()
-  private static $paths = NULL;
+  protected  static $paths = NULL;
+
+  protected $composer;
+  protected $io;
+
+  public function activate(Composer $composer, IOInterface $io)
+  {
+      $this->composer = $composer;
+      $this->io = $io;
+  }
+
+  public static function getSubscribedEvents()
+  {
+      return array(
+          PluginEvents::PRE_FILE_DOWNLOAD => array(
+              array('onPreFileDownload', 0)
+          ),
+      );
+  }
+
+  public function onPreFileDownload(PreFileDownloadEvent $event)
+  {
+      var_dump($event);
+      exit(0);
+  }
 
   /**
    * Call this function to move files defined in composer.json -> extra -> dropin-paths
