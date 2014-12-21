@@ -5,38 +5,6 @@ Composer only allows you to install full directories into their own directories.
 I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```/languages```. See how you can [update wordpress languages with composer](http://languages.koodimonni.fi).
 
 ##How to use it
-These are typical additions I make into my composer.json:
-```json
-{
-  "scripts": {
-    "post-package-update": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ],
-    "post-package-install": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ]
-  },
-  "require": {
-    "koodimonni/composer-dropin-installer": "dev-master",
-    "koodimonni-language/fi": "*",
-
-    "wpackagist-plugin/wp-redis": "*",
-    "wpackagist-plugin/wordpress-mu-domain-mapping": "*"
-  },
-  "extra": {
-    "dropin-paths": {
-      "htdocs/wp-content/languages/": ["type:wordpress-language"],
-      "htdocs/wp-content/languages/plugins/": ["type:wordpress-plugin-language"],
-      "htdocs/wp-content/languages/themes/": ["type:wordpress-theme-language"],
-      "htdocs/wp-content/plugins/": [
-        "package:wpackagist-plugin/wp-redis:object-cache.php",
-        "package:wpackagist-plugin/wordpress-mu-domain-mapping:sunrise.php"
-      ]
-    }
-  }
-}
-```
-
 ###Follow the baby steps
 1. Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
 ```json
@@ -64,6 +32,80 @@ These are typical additions I make into my composer.json:
   }
 ```
 4. Enjoy nice dependency management by composer and install things where the fuck you want them to be.
+
+### End result looks something like this
+```json
+{
+  "name": "koodimonni/wordpress",
+  "type": "project",
+  "description": "Wordpress with composer languages using Koodimonni dropin installer",
+  "homepage": "http://github.com/koodimonni/composer-dropin-installer",
+  "authors": [
+    {
+      "name": "Onni Hakala",
+      "email": "onni@koodimonni.fi",
+      "homepage": "https://github.com/onnimonni"
+    }
+  ],
+  "keywords": [
+    "wordpress", "composer", "wp", "languages"
+  ],
+  "config": {
+    "preferred-install": "dist"
+  },
+  "scripts": {
+    "post-package-update": [
+      "Koodimonni\\Composer\\Dropin::installPackage"
+    ],
+    "post-package-install": [
+      "Koodimonni\\Composer\\Dropin::installPackage"
+    ]
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "http://wpackagist.org"
+    },
+    {
+      "type": "composer",
+      "url": "http://languages.koodimonni.fi"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.2",
+    "johnpbloch/wordpress": "*",
+    "composer/installers": "v1.0.12",
+    "vlucas/phpdotenv": "~1.0.6",
+    "koodimonni/composer-dropin-installer": "*",
+    
+    "koodimonni-language/fi": "*",
+    "koodimonni-language/et": "*",
+    "koodimonni-language/ru_ru": "*",
+
+    "wpackagist-plugin/akismet": "*",
+    "wpackagist-plugin/wp-redis": "*",
+    "wpackagist-plugin/woocommerce": "*",
+    "wpackagist-plugin/wordpress-mu-domain-mapping": "*"
+  },
+  "extra": {
+    "installer-paths": {
+      "htdocs/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+      "htdocs/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
+      "htdocs/wp-content/themes/{$name}": ["type:wordpress-theme"]
+    },
+    "dropin-paths": {
+      "htdocs/wp-content/languages/": ["type:wordpress-language"],
+      "htdocs/wp-content/languages/plugins/": ["type:wordpress-plugin-language"],
+      "htdocs/wp-content/languages/themes/": ["type:wordpress-theme-language"],
+      "htdocs/wp-content/plugins/": [
+        "package:wpackagist-plugin/wp-redis:object-cache.php",
+        "package:wppackagist-plugin/wordpress-mu-domain-mapping:sunrise.php",
+        "type:wordpress-dropin"]
+    },
+    "wordpress-install-dir": "htdocs/wordpress"
+  }
+}
+```
 
 ##But how about the impossible looking syntax?
 Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{files}"```
@@ -93,7 +135,6 @@ readme.txt
 license
 phpunit.xml
 ```
-
 * Script requires unix filesystem (OS X,Linux)
 
 ##Changelog
