@@ -12,7 +12,7 @@ I created this originally for installing multiple languages for wordpress with c
     "koodimonni/composer-dropin-installer": "dev-master"
   }
 ```
-2.Make additions shown above into composer.json -> scripts section. This way you grant permissions for composer-dropin-installer to move files.
+2.Make additions shown below into composer.json -> scripts section. This way you grant permissions for composer-dropin-installer to move files.
 ```json
 "scripts": {
     "post-package-update": [
