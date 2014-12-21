@@ -6,13 +6,13 @@ I created this originally for installing multiple languages for wordpress with c
 
 ##How to use it
 ###Follow the baby steps
-1. Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
+1.Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
 ```json
 "require": {
     "koodimonni/composer-dropin-installer": "dev-master"
   }
 ```
-2. Make additions shown above into composer.json -> scripts section. This way you grant permissions for composer-dropin-installer to move files.
+2.Make additions shown above into composer.json -> scripts section. This way you grant permissions for composer-dropin-installer to move files.
 ```json
 "scripts": {
     "post-package-update": [
@@ -23,7 +23,7 @@ I created this originally for installing multiple languages for wordpress with c
     ]
   },
 ```
-3. Add custom paths into your composer.json -> extra -> dropin-paths.
+3.Add custom paths into your composer.json -> extra -> dropin-paths.
 ```json
 "extra": {
     "dropin-paths": {
@@ -31,7 +31,7 @@ I created this originally for installing multiple languages for wordpress with c
     }
   }
 ```
-4. Enjoy nice dependency management by composer and install things where the fuck you want them to be.
+4.Enjoy nice dependency management by composer and install things where the fuck you want them to be.
 
 ### End result looks something like this
 ```json
