@@ -4,11 +4,242 @@ namespace Koodimonni\Composer;
 
 use Composer\Script\Event;
 
+use Composer\Installer\LibraryInstaller;
+
+#Be compliant with composer/installers
+use Composer\Installers\Installer;
+
 class Dropin {
- 
-  public static function installFiles(Event $event){
+  /**
+   * List of files which will not be moved no matter what
+   * This might be useless, but it gives me peace of mind.
+   * I intended this plugin for moving translations and dropins for wordpress.
+   * Put a pull request if you find some other use cases for this.
+   * these filenames are in lowcase intentionally!!
+   */
+  public static $ignoreList = array(".ds_store",".git",".gitignore","composer.json","composer.lock"
+                                    ,"readme.md","readme.txt","license","phpunit.xml");
+
+  // Cache results of dropin-paths into here and use it only from getter function getPaths()
+  private static $paths = NULL;
+
+  /**
+   * Call this function to move files defined in composer.json -> extra -> dropin-paths
+   * Run this command as post-install-package and post-update-package command
+   * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
+   */
+  public static function installPackage(Event $event){
     $io = $event->getIO();
+
+    #Locate absolute urls
+    $projectDir = getcwd();
+
+    #Get directives from composer.json
     $extra = $event->getComposer()->getPackage()->getExtra();
-    $io->write("Hello!");
+    $paths = Dropin::getPaths($extra['dropin-paths']);
+
+    //Get information about the package that was just installed/updated
+    $package = $event->getOperation()->getPackage();
+
+    //Gather all information for directives
+    $info = array(); 
+    $info['package'] = $package->getName();
+    $info['vendor'] = substr($info['package'], 0, strpos($info['package'], '/'));
+    $info['type'] = $package->getType();
+
+    $dest = Dropin::installPath($info);
+
+    //If dropin has nothing to do with this package just end it
+    if (!$dest) {
+      return;
+    }
+    
+    //Compatibility with composer/installers
+    if (class_exists('\\Composer\\Installers\\Installer')) {
+      $installer = new Installer($io,$event->getComposer());
+    } else {
+      //System default
+      $installer = new LibraryInstaller($io,$event->getComposer());
+    }
+
+    try {
+      //This is not absolute path
+      $src = $installer->getInstallPath($package);
+    } catch (\InvalidArgumentException $e) {
+      // We will end up here if composer/installers doesn't recognise the type
+      // In this case it's the default installation folder in vendor
+      $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+      $src = "{$vendorDir}/{$info['package']}";
+    }
+    $installFiles = Dropin::installFiles($info);
+    if ($installFiles == "*") {
+      Dropin::rmove("{$projectDir}/{$src}","{$projectDir}/{$dest}");
+    } else {
+      foreach($installFiles as $file) {
+        Dropin::move("{$projectDir}/{$src}/{$file}","{$projectDir}/{$dest}");
+      }
+    }
+  }
+
+  /**
+   * Form nice associative array from extra['dropin-paths']
+   * So we can easily decide what to do from the directive eg. 'type:', 'vendor:', 'package:'
+   * Cache it for the rest of the runs
+   */
+  private static function getPaths($dropinPaths) {
+    if(!Dropin::$paths){
+      $dropinDirectives = array();
+      foreach($dropinPaths as $path => $directives) {
+
+        //if directive is string, fixit to use the array logic
+        if (is_string($directives)) {
+          $directives = array($directives);
+        }
+
+        foreach($directives as $directive) {
+          $result = Dropin::parseDirective($directive);
+          if ($result) {
+            $dropinDirectives[$result['type']][$result['target']]['path'] = $path;
+            $dropinDirectives[$result['type']][$result['target']]['files'] = $result['files'];
+          } else {
+            throw new \InvalidArgumentException(
+                "Sorry your dropin directive has problems: $directive.\nIt should be like 'htdocs/wp-content/languages': ['type:wordpress-language']"
+            );
+          }
+        }
+      }
+      //Cache the results
+      Dropin::$paths = $dropinDirectives;
+      return Dropin::$paths;
+
+    }else {
+      //This has already been done earlier, return the results
+      return Dropin::$paths;
+    }
+  }
+
+  /**
+   * If dropin path for package is defined use it and return relative installation path
+   * @param Array $package - Associative array containing all supported types
+   */
+  private static function installPath($package) {
+    if (isset(Dropin::$paths['package'][$package['package']]['path'])){
+
+      return Dropin::$paths['package'][$package['package']]['path'];
+    } elseif (isset(Dropin::$paths['vendor'][$package['vendor']]['path'])){
+
+      return Dropin::$paths['vendor'][$package['vendor']]['path'];
+    } elseif (isset(Dropin::$paths['type'][$package['type']]['path'])){
+
+      return Dropin::$paths['type'][$package['type']]['path'];
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Sometimes not all is wanted to be moved. You can include only the files you want to get moved
+   * This is useful for this this kinds of plugins: wp-packagist/wordpress-mu-domain-mapping
+   * @param Array $package - Associative array containing all supported types
+   */
+  private static function installFiles($package) {
+    if (isset(Dropin::$paths['package'][$package['package']]['files'])){
+      return Dropin::$paths['package'][$package['package']]['files'];
+    } else {
+      return "*";
+    }
+  }
+
+  /**
+   * Recursively move files from one directory to another
+   * 
+   * @param String $src - Source of files being moved
+   * @param String $dest - Destination of files being moved
+   */
+  private static function rmove($src, $dest){
+
+      // If source is not a directory stop processing
+      if(!is_dir($src)) {
+        echo "Source is not a directory";
+        return false;
+      }
+   
+      // If the destination directory does not exist create it
+      if(!is_dir($dest)) { 
+          if(!mkdir($dest)) {
+              // If the destination directory could not be created stop processing
+              echo "Can't create destination path: {$dest}\n";
+              return false;
+          }    
+      }
+   
+      // Open the source directory to read in files
+      $i = new \DirectoryIterator($src);
+      foreach($i as $f) {
+        #Skip useless files&folders
+        if (Dropin::isFileIgnored($f->getFilename())) continue;
+
+        if($f->isFile()) {
+          rename($f->getRealPath(), "$dest/" . $f->getFilename());
+        } else if(!$f->isDot() && $f->isDir()) {
+          Dropin::rmove($f->getRealPath(), "$dest/$f");
+          #unlink($f->getRealPath());
+        }
+      }
+      #We could Remove original directories but don't do it
+      #unlink($src);
+  }
+  private static function move($src, $dest){
+   
+      // If the destination directory does not exist create it
+      if(!is_dir($dest)) { 
+          if(!mkdir($dest)) {
+              // If the destination directory could not be created stop processing
+              echo "Can't create destination path: {$dest}\n";
+              return false;
+          }    
+      }
+      rename($src, "$dest/" . basename($src));
+  }
+  /**
+   * Returns type and information of dropin directive
+   */
+  private static function parseDirective($directive) {
+    #directive example => vendor:koodimonni-language:file1,file2,file3...
+    #so type would be 'vendor';
+    $parsed_directive = explode(':', $directive);
+    $type = $parsed_directive[0];
+    $target = $parsed_directive[1];
+    if (isset($parsed_directive[2])) {
+      $files = explode(',', $parsed_directive[2]);
+    } else {
+      $files = NULL;
+    }
+    if(!$type || !$target) return false;
+
+    return array( "type" => $type, "target" => $target, "files" => $files);
+  }
+
+  /**
+   * Returns true if file is in ignored files list
+   */
+  private static function isFileIgnored($filename){
+    return in_array(strtolower($filename),Dropin::$ignoreList);
+  }
+
+  /**
+   * TODO: finish it
+   * Download single file.
+   * Try to guess from modified time header and content length if they are updated or not.
+   * Then only download files which haven't changed.
+   */
+  private static function downloadResource($src,$dest,$cacheDir=null) {
+    return true;
+    if(!file_exists($cacheDir)){
+      mkdir($cacheDir);
+      mkdir($cacheDir."/files");
+    }
+    var_dump(file_get_contents($src));
+    var_dump($http_response_header);
   }
 }

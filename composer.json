@@ -1,7 +1,7 @@
 {
     "name": "koodimonni/composer-dropin-installer",
-    "description": "Define custom installation path for packages",
-    "license": "MIT",
+    "description": "Do what the fuck you want with your composer packages aka. Composer Dropin installer.",
+    "license": "WTFPL",
     "authors": [
         {
             "name": "Onni Hakala",
