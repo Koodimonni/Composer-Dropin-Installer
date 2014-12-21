@@ -81,7 +81,8 @@ I found out that *Wordpress dropins* needed just that. Good example is this one:
 
 ##Some Notices
 * Script works nicely together with composer/installers
-* So that you can make small mu-plugins or dropins but have nice repos+docs for them I'm ignoring these files automatically:
+* I'm ignoring these files automatically:
+```
 .DS_store
 .git
 .gitignore
@@ -91,6 +92,8 @@ readme.md
 readme.txt
 license
 phpunit.xml
+```
+
 * Script requires unix filesystem (OS X,Linux)
 
 ##Changelog
