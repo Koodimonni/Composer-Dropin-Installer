@@ -68,6 +68,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
    */
   public static function onPackageChanged(PackageEvent $event){
+    $io = $event->getIO();
 
     #Locate absolute urls
     $projectDir = getcwd();
@@ -80,12 +81,16 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     $package = $event->getOperation()->getPackage();
 
     //Gather all information for directives
-    $info = array(); 
-    $info['package'] = $package->getName();
+    $info = array();
+
+    //Composer doesn't care about uppercase and so shouldn't we
+    $info['package'] = strtolower($package->getName());
     $info['vendor'] = substr($info['package'], 0, strpos($info['package'], '/'));
     $info['type'] = $package->getType();
 
-    $dest = Dropin::installPath($info);
+    $installPath = Dropin::installPath($info);
+    $dest = "{$projectDir}/{$installPath}";
+
 
     //If dropin has nothing to do with this package just end it
     if (!$dest) {
@@ -101,33 +106,21 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     }
 
     try {
-      //This is not an absolute path
-      $src = $installer->getInstallPath($package);
+      $src = realpath($installer->getInstallPath($package));
     } catch (\InvalidArgumentException $e) {
       // We will end up here if composer/installers doesn't recognise the type
       // In this case it's the default installation folder in vendor
       $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-      $src = "{$vendorDir}/{$info['package']}";
+      $src = "{$projectDir}/{$vendorDir}/{$info['package']}";
     }
-    $installFiles = Dropin::installFiles($info);
 
+    $installFiles = Dropin::installFiles($info);
     if ($installFiles == "*") {
-      $this->echoVerbose("Moving all from: {$projectDir}/{$src} => {$projectDir}/{$dest}");
-      Dropin::rmove("{$projectDir}/{$src}","{$projectDir}/{$dest}");
+      Dropin::rmove($src,$dest);
     } else {
       foreach($installFiles as $file) {
-        $this->echoVerbose("Moving file: {$projectDir}/{$src}/{$file} => {$projectDir}/{$dest}");
-        Dropin::move("{$projectDir}/{$src}/{$file}","{$projectDir}/{$dest}");
+        Dropin::move("{$src}/{$file}",$dest);
       }
-    }
-  }
-
-  /*
-   * Echo if verbose mode is active
-   */
-  private static function echoVerbose($message) {
-    if($this->io->isVerbose()){
-      $this->io->write($message);
     }
   }
 
@@ -207,44 +200,46 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param String $dest - Destination of files being moved
    */
   private static function rmove($src, $dest){
+    var_dump("moving source:".$src);
+    var_dump("to destination:".$dest);
 
-      // If source is not a directory stop processing
-      if(!is_dir($src)) {
-        echo "Source is not a directory";
-        return false;
-      }
-   
-      // If the destination directory does not exist create it
-      if(!is_dir($dest)) { 
-        //Create folders with typical permissions recursively
+
+    // If source is not a directory stop processing
+    if(!is_dir($src)) {
+      echo "Source is not a directory";
+      return false;
+    }
+
+    // If the destination directory does not exist create it
+    if(!is_dir($dest)) { 
         if(!mkdir($dest,0777,true)) {
             // If the destination directory could not be created stop processing
             echo "Can't create destination path: {$dest}\n";
             return false;
         }    
-      }
-   
-      // Open the source directory to read in files
-      $i = new \DirectoryIterator($src);
-      foreach($i as $f) {
-        #Skip useless files&folders
-        if (Dropin::isFileIgnored($f->getFilename())) continue;
+    }
+ 
+    // Open the source directory to read in files
+    $i = new \DirectoryIterator($src);
+    foreach($i as $f) {
+      #Skip useless files&folders
+      if (Dropin::isFileIgnored($f->getFilename())) continue;
 
-        if($f->isFile()) {
-          rename($f->getRealPath(), "$dest/" . $f->getFilename());
-        } else if(!$f->isDot() && $f->isDir()) {
-          Dropin::rmove($f->getRealPath(), "$dest/$f");
-          #unlink($f->getRealPath());
-        }
+      if($f->isFile()) {
+        rename($f->getRealPath(), "$dest/" . $f->getFilename());
+      } else if(!$f->isDot() && $f->isDir()) {
+        Dropin::rmove($f->getRealPath(), "$dest/$f");
+        #unlink($f->getRealPath());
       }
-      #We could Remove original directories but don't do it
-      #unlink($src);
+    }
+    #We could Remove original directories but don't do it
+    #unlink($src);
   }
   private static function move($src, $dest){
    
       // If the destination directory does not exist create it
       if(!is_dir($dest)) { 
-          if(!mkdir($dest)) {
+          if(!mkdir($dest,0777,true)) {
               // If the destination directory could not be created stop processing
               echo "Can't create destination path: {$dest}\n";
               return false;
