@@ -68,7 +68,6 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
    */
   public static function onPackageChanged(PackageEvent $event){
-    $io = $event->getIO();
 
     #Locate absolute urls
     $projectDir = getcwd();
@@ -111,12 +110,24 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       $src = "{$vendorDir}/{$info['package']}";
     }
     $installFiles = Dropin::installFiles($info);
+
     if ($installFiles == "*") {
+      $this->echoVerbose("Moving all from: {$projectDir}/{$src} => {$projectDir}/{$dest}");
       Dropin::rmove("{$projectDir}/{$src}","{$projectDir}/{$dest}");
     } else {
       foreach($installFiles as $file) {
+        $this->echoVerbose("Moving file: {$projectDir}/{$src}/{$file} => {$projectDir}/{$dest}");
         Dropin::move("{$projectDir}/{$src}/{$file}","{$projectDir}/{$dest}");
       }
+    }
+  }
+
+  /*
+   * Echo if verbose mode is active
+   */
+  private static function echoVerbose($message) {
+    if($this->io->isVerbose()){
+      $this->io->write($message);
     }
   }
 
@@ -205,11 +216,12 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    
       // If the destination directory does not exist create it
       if(!is_dir($dest)) { 
-          if(!mkdir($dest)) {
-              // If the destination directory could not be created stop processing
-              echo "Can't create destination path: {$dest}\n";
-              return false;
-          }    
+        //Create folders with typical permissions recursively
+        if(!mkdir($dest,0777,true)) {
+            // If the destination directory could not be created stop processing
+            echo "Can't create destination path: {$dest}\n";
+            return false;
+        }    
       }
    
       // Open the source directory to read in files
