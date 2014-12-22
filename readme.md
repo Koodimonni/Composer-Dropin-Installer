@@ -1,29 +1,20 @@
 #Composer Dropin installer
 This composer plugin helps you to move your composer packaged files where you want them to be.
-Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects.
 
-I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```/languages```. See how you can [update wordpress languages with composer](http://languages.koodimonni.fi).
+Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects. We just let composer install things and take it from there.
+
+I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update wordpress languages with composer](http://languages.koodimonni.fi).
 
 ##How to use it
 ###Follow the baby steps
+
 1.Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
 ```json
 "require": {
     "koodimonni/composer-dropin-installer": "dev-master"
   }
 ```
-2.Make additions shown below into composer.json -> scripts section. This way you grant permissions for composer-dropin-installer to move files.
-```json
-"scripts": {
-    "post-package-update": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ],
-    "post-package-install": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ]
-  },
-```
-3.Add custom paths into your composer.json -> extra -> dropin-paths.
+2.Add custom paths into your composer.json -> extra -> dropin-paths.
 ```json
 "extra": {
     "dropin-paths": {
@@ -31,7 +22,7 @@ I created this originally for installing multiple languages for wordpress with c
     }
   }
 ```
-4.Enjoy nice dependency management by composer and install things where the fuck you want them to be.
+3.Enjoy nice dependency management by composer and install things where the fuck you want them to be.
 
 ### End result looks something like this
 ```json
@@ -53,14 +44,6 @@ I created this originally for installing multiple languages for wordpress with c
   "config": {
     "preferred-install": "dist"
   },
-  "scripts": {
-    "post-package-update": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ],
-    "post-package-install": [
-      "Koodimonni\\Composer\\Dropin::installPackage"
-    ]
-  },
   "repositories": [
     {
       "type": "composer",
@@ -73,10 +56,13 @@ I created this originally for installing multiple languages for wordpress with c
   ],
   "require": {
     "php": ">=5.3.2",
+
+    "koodimonni/composer-dropin-installer": "0.2",
+
     "johnpbloch/wordpress": "*",
     "composer/installers": "v1.0.12",
     "vlucas/phpdotenv": "~1.0.6",
-    "koodimonni/composer-dropin-installer": "*",
+    
     
     "koodimonni-language/fi": "*",
     "koodimonni-language/et": "*",
@@ -90,10 +76,10 @@ I created this originally for installing multiple languages for wordpress with c
   "extra": {
     "installer-paths": {
       "htdocs/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
-      "htdocs/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"],
       "htdocs/wp-content/themes/{$name}": ["type:wordpress-theme"]
     },
     "dropin-paths": {
+      "htdocs/wp-content/mu-plugins/": ["type:wordpress-muplugin"],
       "htdocs/wp-content/languages/": ["type:wordpress-language"],
       "htdocs/wp-content/languages/plugins/": ["type:wordpress-plugin-language"],
       "htdocs/wp-content/languages/themes/": ["type:wordpress-theme-language"],
@@ -138,4 +124,5 @@ phpunit.xml
 * Script requires unix filesystem (OS X,Linux)
 
 ##Changelog
+* 0.2 Change from custom composer script to composer plugin
 * 0.1 Initial release
