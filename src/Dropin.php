@@ -12,9 +12,13 @@ use Composer\Plugin\PluginInterface;
 #Subscribe to Package events
 use Composer\Script\PackageEvent;
 
+#For asking package about it's details
+use Composer\Package\PackageInterface;
+
+#Default installer
 use Composer\Installer\LibraryInstaller;
 
-#Be compliant with composer/installers
+#Hook in composer/installers for asking custom paths
 use Composer\Installers\Installer;
 
 
@@ -54,21 +58,20 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   {
       return array(
           "post-package-install" => array(
-              array('onPackageChanged', 0)
+              array('onPackageInstall', 0)
           ),
           "post-package-update" => array(
-              array('onPackageChanged', 0)
+              array('onPackageUpdate', 0)
           ),
       );
   }
 
   /**
    * Hook up this function to package install to move files defined in composer.json -> extra -> dropin-paths
-   * Run this command as post-install-package and post-update-package command
-   * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
+   * Run this command as post-install-package
+   * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
    */
-  public static function onPackageChanged(PackageEvent $event){
-    $io = $event->getIO();
+  private static function onPackageInstall(PackageEvent $event){
 
     #Locate absolute urls
     $projectDir = getcwd();
@@ -77,9 +80,47 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     $extra = $event->getComposer()->getPackage()->getExtra();
     $paths = Dropin::getPaths($extra['dropin-paths']);
 
-    //Get information about the package that was just installed/updated
+    //Get information about the package that was just installed
     $package = $event->getOperation()->getPackage();
+    
+    $this->dropNewFiles($package);
+  }
 
+  /**
+   * Hook up this function to package install to move files defined in composer.json -> extra -> dropin-paths
+   * Run this command as post-install-package
+   * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
+   */
+  private static function onPackageUpdate(PackageEvent $event){
+
+    #Locate absolute urls
+    $projectDir = getcwd();
+
+    #Get directives from composer.json
+    $extra = $event->getComposer()->getPackage()->getExtra();
+    $paths = Dropin::getPaths($extra['dropin-paths']);
+
+    //Get information about the package that Replaced the earlier package
+
+    //TODO: Keep record of moved files and delete them on updates and in package deletion
+    $package = $event->getOperation()->getTargetPackage();
+
+    $this->dropNewFiles($package);
+  }
+
+  /**
+   * TODO: Keep track of files so you could also delete them!!
+   * Run this command as post-delete-package
+   * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
+   */
+  private static function onPackageDelete(PackageEvent $event){
+  }
+
+  /*
+   * Call this function with the installed/updated package
+   * @param Composer\Package\PackageInterface $package - Composer Package which we are handling
+   */
+  public function dropNewFiles(PackageInterface $package){
     //Gather all information for directives
     $info = array();
 
@@ -99,10 +140,10 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     
     //Compatibility with composer/installers
     if (class_exists('\\Composer\\Installers\\Installer')) {
-      $installer = new Installer($io,$event->getComposer());
+      $installer = new Installer($this->io,$this->composer);
     } else {
       //System default
-      $installer = new LibraryInstaller($io,$event->getComposer());
+      $installer = new LibraryInstaller($this->io,$this->composer);
     }
 
     try {
@@ -114,7 +155,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       $src = "{$projectDir}/{$vendorDir}/{$info['package']}";
     }
 
-    $installFiles = Dropin::installFiles($info);
+    $installFiles = Dropin::getFilesToInstall($info);
     if ($installFiles == "*") {
       Dropin::rmove($src,$dest);
     } else {
@@ -185,7 +226,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * This is useful for this this kinds of plugins: wp-packagist/wordpress-mu-domain-mapping
    * @param Array $package - Associative array containing all supported types
    */
-  private static function installFiles($package) {
+  private static function getFilesToInstall($package) {
     if (isset(Dropin::$paths['package'][$package['package']]['files'])){
       return Dropin::$paths['package'][$package['package']]['files'];
     } else {
