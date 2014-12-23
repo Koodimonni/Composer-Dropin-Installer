@@ -164,7 +164,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * So we can easily decide what to do from the directive eg. 'type:', 'vendor:', 'package:'
    * Cache it for the rest of the runs
    */
-  private static function getPaths($dropinPaths) {
+  private function getPaths($dropinPaths) {
     if(!$this->paths){
       $dropinDirectives = array();
       foreach($dropinPaths as $path => $directives) {
@@ -200,7 +200,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * If dropin path for package is defined use it and return relative installation path
    * @param Array $package - Associative array containing all supported types
    */
-  private static function installPath($package) {
+  private function installPath($package) {
     if (isset($this->paths['package'][$package['package']]['path'])){
 
       return $this->paths['package'][$package['package']]['path'];
@@ -220,7 +220,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * This is useful for this this kinds of plugins: wp-packagist/wordpress-mu-domain-mapping
    * @param Array $package - Associative array containing all supported types
    */
-  private static function getFilesToInstall($package) {
+  private function getFilesToInstall($package) {
     if (isset($this->paths['package'][$package['package']]['files'])){
       return $this->paths['package'][$package['package']]['files'];
     } else {
