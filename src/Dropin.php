@@ -34,7 +34,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
                                     ,"readme.md","readme.txt","license","phpunit.xml");
 
   // Cache results of dropin-paths into here and use it only from getter function getPaths()
-  protected  static $paths = NULL;
+  protected $paths = NULL;
 
   protected $composer;
   protected $io;
@@ -71,15 +71,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Run this command as post-install-package
    * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
    */
-  private static function onPackageInstall(PackageEvent $event){
-
-    #Locate absolute urls
-    $projectDir = getcwd();
-
-    #Get directives from composer.json
-    $extra = $event->getComposer()->getPackage()->getExtra();
-    $paths = Dropin::getPaths($extra['dropin-paths']);
-
+  public function onPackageInstall(PackageEvent $event){
     //Get information about the package that was just installed
     $package = $event->getOperation()->getPackage();
     
@@ -91,20 +83,11 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Run this command as post-install-package
    * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
    */
-  private static function onPackageUpdate(PackageEvent $event){
-
-    #Locate absolute urls
-    $projectDir = getcwd();
-
-    #Get directives from composer.json
-    $extra = $event->getComposer()->getPackage()->getExtra();
-    $paths = Dropin::getPaths($extra['dropin-paths']);
-
-    //Get information about the package that Replaced the earlier package
-
+  public function onPackageUpdate(PackageEvent $event){
     //TODO: Keep record of moved files and delete them on updates and in package deletion
     $package = $event->getOperation()->getTargetPackage();
 
+    //For now just Ignore what happend earlier and assume that new files will replace earlier 
     $this->dropNewFiles($package);
   }
 
@@ -113,7 +96,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Run this command as post-delete-package
    * @param Composer\Script\Event $event - Composer automatically tells information about itself for custom scripts
    */
-  private static function onPackageDelete(PackageEvent $event){
+  public static function onPackageDelete(PackageEvent $event){
   }
 
   /*
@@ -121,6 +104,14 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param Composer\Package\PackageInterface $package - Composer Package which we are handling
    */
   public function dropNewFiles(PackageInterface $package){
+
+    #Locate absolute urls
+    $projectDir = getcwd();
+
+    #Get directives from composer.json
+    $extra = $this->composer->getPackage()->getExtra();
+    $paths = Dropin::getPaths($extra['dropin-paths']);
+
     //Gather all information for directives
     $info = array();
 
@@ -133,7 +124,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     $dest = "{$projectDir}/{$installPath}";
 
 
-    //If dropin has nothing to do with this package just end it
+    //If dropin has nothing to do with this package just end it now
     if (!$dest) {
       return;
     }
@@ -151,7 +142,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     } catch (\InvalidArgumentException $e) {
       // We will end up here if composer/installers doesn't recognise the type
       // In this case it's the default installation folder in vendor
-      $vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+      $vendorDir = $this->composer->getConfig()->get('vendor-dir');
       $src = "{$projectDir}/{$vendorDir}/{$info['package']}";
     }
 
