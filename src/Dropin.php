@@ -146,10 +146,12 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       // We will end up here if composer/installers doesn't recognise the type
       // In this case it's the default installation folder in vendor
       $vendorDir = $this->composer->getConfig()->get('vendor-dir');
-      $src = "{$projectDir}/{$vendorDir}/{$info['package']}";
+      $vendorDir = realpath($vendorDir);
+      $src = "{$vendorDir}/{$info['package']}";
     }
 
     $installFiles = Dropin::getFilesToInstall($info);
+    $this->io->write("    Moving dropin files...\n");
     if ($installFiles == "*") {
       Dropin::rmove($src,$dest);
     } else {
@@ -235,10 +237,6 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param String $dest - Destination of files being moved
    */
   private static function rmove($src, $dest){
-    var_dump("moving source:".$src);
-    var_dump("to destination:".$dest);
-
-
     // If source is not a directory stop processing
     if(!is_dir($src)) {
       echo "Source is not a directory";
