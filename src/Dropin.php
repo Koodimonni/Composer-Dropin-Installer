@@ -34,7 +34,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
                                     ,"readme.md","readme.txt","license","phpunit.xml");
 
   // Cache results of dropin-paths into here and use it only from getter function getPaths()
-  protected $paths = NULL;
+  protected $paths;
 
   protected $composer;
   protected $io;
@@ -132,10 +132,8 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       $dest = "{$projectDir}/{$dest}"; //Update to full path
     }
     
-    //Check installation paths with Installer
-    
+    //Compatibility with composer/installers
     if (class_exists('\\Composer\\Installers\\Installer')) {
-      //Compatibility with composer/installers
       $installer = new Installer($this->io,$this->composer);
     } else {
       //System default
@@ -167,7 +165,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Cache it for the rest of the runs
    */
   private static function getPaths($dropinPaths) {
-    if(!Dropin::$paths){
+    if(!$this->paths){
       $dropinDirectives = array();
       foreach($dropinPaths as $path => $directives) {
 
@@ -189,12 +187,12 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
         }
       }
       //Cache the results
-      Dropin::$paths = $dropinDirectives;
-      return Dropin::$paths;
+      $this->paths = $dropinDirectives;
+      return $this->paths;
 
     }else {
       //This has already been done earlier, return the results
-      return Dropin::$paths;
+      return $this->paths;
     }
   }
 
@@ -203,15 +201,15 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param Array $package - Associative array containing all supported types
    */
   private static function installPath($package) {
-    if (isset(Dropin::$paths['package'][$package['package']]['path'])){
+    if (isset($this->paths['package'][$package['package']]['path'])){
 
-      return Dropin::$paths['package'][$package['package']]['path'];
-    } elseif (isset(Dropin::$paths['vendor'][$package['vendor']]['path'])){
+      return $this->paths['package'][$package['package']]['path'];
+    } elseif (isset($this->paths['vendor'][$package['vendor']]['path'])){
 
-      return Dropin::$paths['vendor'][$package['vendor']]['path'];
-    } elseif (isset(Dropin::$paths['type'][$package['type']]['path'])){
+      return $this->paths['vendor'][$package['vendor']]['path'];
+    } elseif (isset($this->paths['type'][$package['type']]['path'])){
 
-      return Dropin::$paths['type'][$package['type']]['path'];
+      return $this->paths['type'][$package['type']]['path'];
     } else {
       return false;
     }
@@ -223,10 +221,10 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * @param Array $package - Associative array containing all supported types
    */
   private static function getFilesToInstall($package) {
-    if (isset(Dropin::$paths['package'][$package['package']]['files'])){
-      return Dropin::$paths['package'][$package['package']]['files'];
+    if (isset($this->paths['package'][$package['package']]['files'])){
+      return $this->paths['package'][$package['package']]['files'];
     } else {
-      return "*";
+      return "*"; //Install all
     }
   }
 
