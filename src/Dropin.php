@@ -85,6 +85,9 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    */
   public function onPackageUpdate(PackageEvent $event){
     //TODO: Keep record of moved files and delete them on updates and in package deletion
+    //$package = $event->getOperation()->getInitialPackage(); //Do something for these.
+    //Maybe symlinking/copying files would be better than moving.
+
     $package = $event->getOperation()->getTargetPackage();
 
     //For now just Ignore what happend earlier and assume that new files will replace earlier 
@@ -120,17 +123,19 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     $info['vendor'] = substr($info['package'], 0, strpos($info['package'], '/'));
     $info['type'] = $package->getType();
 
-    $installPath = Dropin::installPath($info);
-    $dest = "{$projectDir}/{$installPath}";
-
+    $dest = Dropin::installPath($info);
 
     //If dropin has nothing to do with this package just end it now
     if (!$dest) {
       return;
+    }else {
+      $dest = "{$projectDir}/{$dest}"; //Update to full path
     }
     
-    //Compatibility with composer/installers
+    //Check installation paths with Installer
+    
     if (class_exists('\\Composer\\Installers\\Installer')) {
+      //Compatibility with composer/installers
       $installer = new Installer($this->io,$this->composer);
     } else {
       //System default
