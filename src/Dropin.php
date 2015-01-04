@@ -108,20 +108,26 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    */
   public function dropNewFiles(PackageInterface $package){
 
-    #Locate absolute urls
-    $projectDir = getcwd();
-
-    #Get directives from composer.json
-    $extra = $this->composer->getPackage()->getExtra();
-    $paths = self::getPaths($extra['dropin-paths']);
-
-    //Gather all information for directives
+    //Gather all information for dropin directives
     $info = array();
 
     //Composer doesn't care about uppercase and so shouldn't we
     $info['package'] = strtolower($package->getName());
     $info['vendor'] = substr($info['package'], 0, strpos($info['package'], '/'));
     $info['type'] = $package->getType();
+
+    #Locate absolute urls
+    $projectDir = getcwd();
+
+    #Get directives from composer.json
+    $extra = $this->composer->getPackage()->getExtra();
+    
+    if (isset($extra['dropin-paths'])) {
+      $paths = self::getPaths($extra['dropin-paths']);
+    } else {
+      //Stop here if dropin-paths is not defined.
+      return;
+    }
 
     $dest = self::installPath($info);
 

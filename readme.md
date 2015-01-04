@@ -123,6 +123,13 @@ phpunit.xml
 ```
 * Script requires unix filesystem (OS X,Linux)
 
+##Todo
+* Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
+
 ##Changelog
+* 0.2.4 Fixes crashing when 'dropin-paths' is not defined in extra section.
+* 0.2.3 Bug fixes and added small notice to user when dropins are runned
+* 0.2.2 Bug fixes
+* 0.2.1 Bug fixes
 * 0.2 Change from custom composer script to composer plugin
 * 0.1 Initial release
