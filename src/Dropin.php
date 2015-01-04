@@ -74,7 +74,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   public function onPackageInstall(PackageEvent $event){
     //Get information about the package that was just installed
     $package = $event->getOperation()->getPackage();
-    
+
     $this->dropNewFiles($package);
   }
 
@@ -90,7 +90,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
 
     $package = $event->getOperation()->getTargetPackage();
 
-    //For now just Ignore what happend earlier and assume that new files will replace earlier 
+    //For now just Ignore what happend earlier and assume that new files will replace earlier
     $this->dropNewFiles($package);
   }
 
@@ -113,7 +113,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
 
     #Get directives from composer.json
     $extra = $this->composer->getPackage()->getExtra();
-    $paths = Dropin::getPaths($extra['dropin-paths']);
+    $paths = self::getPaths($extra['dropin-paths']);
 
     //Gather all information for directives
     $info = array();
@@ -123,7 +123,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     $info['vendor'] = substr($info['package'], 0, strpos($info['package'], '/'));
     $info['type'] = $package->getType();
 
-    $dest = Dropin::installPath($info);
+    $dest = self::installPath($info);
 
     //If dropin has nothing to do with this package just end it now
     if (!$dest) {
@@ -131,7 +131,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     }else {
       $dest = "{$projectDir}/{$dest}"; //Update to full path
     }
-    
+
     //Compatibility with composer/installers
     if (class_exists('\\Composer\\Installers\\Installer')) {
       $installer = new Installer($this->io,$this->composer);
@@ -150,13 +150,13 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       $src = "{$vendorDir}/{$info['package']}";
     }
 
-    $installFiles = Dropin::getFilesToInstall($info);
+    $installFiles = self::getFilesToInstall($info);
     $this->io->write("    Moving dropin files...\n");
     if ($installFiles == "*") {
-      Dropin::rmove($src,$dest);
+      self::rmove($src,$dest);
     } else {
       foreach($installFiles as $file) {
-        Dropin::move("{$src}/{$file}",$dest);
+        self::move("{$src}/{$file}",$dest);
       }
     }
   }
@@ -177,7 +177,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
         }
 
         foreach($directives as $directive) {
-          $result = Dropin::parseDirective($directive);
+          $result = self::parseDirective($directive);
           if ($result) {
             $dropinDirectives[$result['type']][$result['target']]['path'] = $path;
             $dropinDirectives[$result['type']][$result['target']]['files'] = $result['files'];
@@ -232,7 +232,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
 
   /**
    * Recursively move files from one directory to another
-   * 
+   *
    * @param String $src - Source of files being moved
    * @param String $dest - Destination of files being moved
    */
@@ -244,24 +244,24 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     }
 
     // If the destination directory does not exist create it
-    if(!is_dir($dest)) { 
+    if(!is_dir($dest)) {
         if(!mkdir($dest,0777,true)) {
             // If the destination directory could not be created stop processing
             echo "Can't create destination path: {$dest}\n";
             return false;
-        }    
+        }
     }
- 
+
     // Open the source directory to read in files
     $i = new \DirectoryIterator($src);
     foreach($i as $f) {
       #Skip useless files&folders
-      if (Dropin::isFileIgnored($f->getFilename())) continue;
+      if (self::isFileIgnored($f->getFilename())) continue;
 
       if($f->isFile()) {
         rename($f->getRealPath(), "$dest/" . $f->getFilename());
       } else if(!$f->isDot() && $f->isDir()) {
-        Dropin::rmove($f->getRealPath(), "$dest/$f");
+        self::rmove($f->getRealPath(), "$dest/$f");
         #unlink($f->getRealPath());
       }
     }
@@ -269,14 +269,14 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     #unlink($src);
   }
   private static function move($src, $dest){
-   
+
       // If the destination directory does not exist create it
-      if(!is_dir($dest)) { 
+      if(!is_dir($dest)) {
           if(!mkdir($dest,0777,true)) {
               // If the destination directory could not be created stop processing
               echo "Can't create destination path: {$dest}\n";
               return false;
-          }    
+          }
       }
       rename($src, "$dest/" . basename($src));
   }
@@ -303,6 +303,6 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Returns true if file is in ignored files list
    */
   private static function isFileIgnored($filename){
-    return in_array(strtolower($filename),Dropin::$ignoreList);
+    return in_array(strtolower($filename),self::$ignoreList);
   }
 }
