@@ -1,0 +1,13 @@
+language: php 
+
+php:
+  - 5.6
+  - hhvm
+
+before_script:
+ - composer self-update
+ # Install test run into tests/ folder using tests/composer.json 
+ - composer install --working-dir=./tests/
+
+script: 
+ - "phpunit tests/"

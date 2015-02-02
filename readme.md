@@ -1,4 +1,7 @@
-#Composer Dropin installer
+# Composer Dropin installer
+
+[![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer)
+
 This composer plugin helps you to move your composer packaged files where you want them to be.
 
 Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects. We just let composer install things and take it from there.

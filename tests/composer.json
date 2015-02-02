@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "../"
+            "url": "../.git"
         },
         {
             "type": "composer",
