@@ -1,0 +1,36 @@
+{
+    "name": "koodimonni/composer-dropin-installer-tests",
+    "description": "composer.json for testing composer-dropin-installer",
+    "license": "WTFPL",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Onni Hakala",
+            "email": "onni@koodimonni.fi"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "../"
+        },
+        {
+            "type": "composer",
+            "url": "http://languages.koodimonni.fi"
+        },
+        {
+            "packagist": false
+        }
+    ],
+    "require": {
+        "koodimonni/composer-dropin-installer": "*",
+        "koodimonni-language/fi": "*"
+    },
+    "extra": {
+        "dropin-paths": {
+          "htdocs/wp-content/languages/": ["vendor:koodimonni-language"],
+          "htdocs/wp-content/languages/plugins": ["vendor:koodimonni-plugin-language"],
+          "htdocs/wp-content/languages/themes": ["vendor:koodimonni-theme-language"]
+        }
+    }
+}

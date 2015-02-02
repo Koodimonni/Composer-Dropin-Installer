@@ -1,2 +1,7 @@
 /vendor/
 composer.lock
+
+# Stuff from tests
+tests/htdocs
+tests/vendor
+tests/composer.lock
