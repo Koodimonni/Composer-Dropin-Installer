@@ -6,7 +6,7 @@ This composer plugin helps you to move your composer packaged files where you wa
 
 Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects. We just let composer install things and take it from there.
 
-I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update wordpress languages with composer](http://languages.koodimonni.fi).
+I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update wordpress languages with composer](https://wp-languages.github.io).
 
 ##How to use it
 ###Follow the baby steps
@@ -54,7 +54,7 @@ I created this originally for installing multiple languages for wordpress with c
     },
     {
       "type": "composer",
-      "url": "http://languages.koodimonni.fi"
+      "url": "https://wp-languages.github.io"
     }
   ],
   "require": {
@@ -130,6 +130,8 @@ phpunit.xml
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
 
 ##Changelog
+* 1.0.1 Updated tests to new repository https://wp-languages.github.io
+* 1.0 Stable release, updated to newer composer-plugin-api
 * 0.2.4 Fixes crashing when 'dropin-paths' is not defined in extra section.
 * 0.2.3 Bug fixes and added small notice to user when dropins are runned
 * 0.2.2 Bug fixes
