@@ -1,5 +1,5 @@
 <?php
-class FileExistsTest extends PHPUnit_Framework_TestCase
+class KoodimonniComposerFilesExistsTest extends PHPUnit_Framework_TestCase
 {
 
   public function testFinnishLanguageWasInstalled()
