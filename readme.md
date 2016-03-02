@@ -84,8 +84,8 @@ I created this originally for installing multiple languages for wordpress with c
     "dropin-paths": {
       "htdocs/wp-content/mu-plugins/": ["type:wordpress-muplugin"],
       "htdocs/wp-content/languages/": ["type:wordpress-language"],
-      "htdocs/wp-content/languages/plugins/": ["type:wordpress-plugin-language"],
-      "htdocs/wp-content/languages/themes/": ["type:wordpress-theme-language"],
+      "htdocs/wp-content/languages/plugins/": ["vendor:wordpress-plugin-language"],
+      "htdocs/wp-content/languages/themes/": ["vendor:wordpress-theme-language"],
       "htdocs/wp-content/plugins/": [
         "package:wpackagist-plugin/wp-redis:object-cache.php",
         "package:wppackagist-plugin/wordpress-mu-domain-mapping:sunrise.php",
