@@ -1,6 +1,6 @@
 # Composer Dropin installer
 
-[![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer)
+[![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer) [![Latest Stable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/stable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Total Downloads](https://poser.pugx.org/koodimonni/composer-dropin-installer/downloads)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Latest Unstable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/unstable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![License](https://poser.pugx.org/koodimonni/composer-dropin-installer/license)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
 
 This composer plugin helps you to move your composer packaged files where you want them to be.
 
