@@ -9,5 +9,8 @@ before_script:
  # Install test run into tests/ folder using tests/composer.json 
  - composer install --working-dir=./tests/
 
-script: 
- - "phpunit tests/"
+script:
+  - ls
+  - ls tests
+  - ls tests/htdocs/wp-content/languages
+  - "phpunit tests/"
