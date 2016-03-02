@@ -1,7 +1,7 @@
 <?php
 class KoodimonniComposerFilesExistsTest extends PHPUnit_Framework_TestCase
 {
-
+  
   public function testFinnishLanguageWasInstalled()
   {
       $this->assertFileExists(dirname( __FILE__ ) . '/htdocs/wp-content/languages/fi.po');
@@ -10,5 +10,5 @@ class KoodimonniComposerFilesExistsTest extends PHPUnit_Framework_TestCase
   {
       $this->assertFileNotExists(dirname( __FILE__ ) . '/vendor/koodimonni-language/fi/fi.po');
   }
+
 }
-?>
