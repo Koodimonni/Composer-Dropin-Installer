@@ -1,3 +1,6 @@
+# This uses newer and faster docker based build system
+sudo: false
+
 language: php
 
 php:
@@ -11,13 +14,13 @@ matrix:
     - php: nightly
 
 before_script:
- - composer self-update
+  - composer self-update
 
- # Copy dropin files into /tmp so that we can require it into composer.json used by tests
+  # Copy dropin files into /tmp so that we can require it into composer.json used by tests
   - cp -r . /tmp/composer-dropin-repo
 
- # Install test run into tests/ folder using tests/composer.json
- - composer install --working-dir=./tests/
+  # Install test run into tests/ folder using tests/composer.json
+  - composer install --working-dir=./tests/
 
 script:
   # Sanity php syntax check
