@@ -11,8 +11,8 @@
     ],
     "repositories": [
         {
-            "type": "path",
-            "url": "/tmp/dropin-installer-repo"
+            "type": "vcs",
+            "url": "https://github.com/Koodimonni/Composer-Dropin-Installer"
         },
         {
             "type": "composer",
@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "koodimonni/composer-dropin-installer": "*",
+        "koodimonni/composer-dropin-installer": "dev-master#%%TRAVIS_COMMIT%%",
         "koodimonni-language/fi": "*"
     },
     "extra": {
