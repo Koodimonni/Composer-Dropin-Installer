@@ -16,6 +16,9 @@ matrix:
 before_script:
   - composer self-update
 
+  # Give git a fake version so that we can avoid travis branch name
+  - git tag 10000
+
   # Copy dropin files into /tmp so that we can require it into composer.json used by tests
   - cp -r . /tmp/dropin-installer-repo
 

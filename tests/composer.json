@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "koodimonni/composer-dropin-installer": "dev-master",
+        "koodimonni/composer-dropin-installer": "*",
         "koodimonni-language/fi": "*"
     },
     "extra": {
