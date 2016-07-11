@@ -6,7 +6,8 @@
     "authors": [
         {
             "name": "Onni Hakala",
-            "email": "onni@koodimonni.fi"
+            "email": "onni@koodimonni.fi",
+            "role": "Developer"
         }
     ],
     "minimum-stability": "dev",

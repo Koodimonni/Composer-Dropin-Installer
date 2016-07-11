@@ -1,4 +1,4 @@
-language: php 
+language: php
 
 php:
   - 5.6
@@ -6,11 +6,16 @@ php:
 
 before_script:
  - composer self-update
- # Install test run into tests/ folder using tests/composer.json 
+ # Install test run into tests/ folder using tests/composer.json
  - composer install --working-dir=./tests/
 
 script:
-  - ls
-  - ls tests
-  - ls tests/htdocs/wp-content/languages
+  # Sanity php syntax check
+  - php -d error_reporting=32767 -l src/Dropin.php
+
+  # Sanity composer check
+  - composer validate composer.json
+
+  # Copy dropin files into /tmp so that we can require it into composer.json used by tests
+  - cp -r . /tmp/composer-dropin-repo
   - "phpunit tests/"
