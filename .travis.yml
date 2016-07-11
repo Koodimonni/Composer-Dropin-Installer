@@ -1,11 +1,21 @@
 language: php
 
 php:
-  - 5.6
+  - '5.6'
+  - '7.0'
   - hhvm
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: nightly
 
 before_script:
  - composer self-update
+
+ # Copy dropin files into /tmp so that we can require it into composer.json used by tests
+  - cp -r . /tmp/composer-dropin-repo
+
  # Install test run into tests/ folder using tests/composer.json
  - composer install --working-dir=./tests/
 
@@ -16,6 +26,5 @@ script:
   # Sanity composer check
   - composer validate composer.json
 
-  # Copy dropin files into /tmp so that we can require it into composer.json used by tests
-  - cp -r . /tmp/composer-dropin-repo
+  # Run the real tests finally
   - "phpunit tests/"
