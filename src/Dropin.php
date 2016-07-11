@@ -31,7 +31,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * these filenames are in lowcase intentionally!!
    */
   public static $ignoreList = array(".ds_store",".git",".gitignore","composer.json","composer.lock"
-                                    ,"readme.md","readme.txt","license","phpunit.xml");
+                                    ,"readme.md","readme.txt","license","phpunit.xml",".travis.yml");
 
   // Cache results of dropin-paths into here and use it only from getter function getPaths()
   protected $paths;
@@ -121,7 +121,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
 
     #Get directives from composer.json
     $extra = $this->composer->getPackage()->getExtra();
-    
+
     if (isset($extra['dropin-paths'])) {
       $paths = self::getPaths($extra['dropin-paths']);
     } else {
