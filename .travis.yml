@@ -17,7 +17,7 @@ before_script:
   - composer self-update
 
   # Copy dropin files into /tmp so that we can require it into composer.json used by tests
-  - cp -r . /tmp/composer-dropin-repo
+  - cp -r . /tmp/dropin-installer-repo
 
   # Install test run into tests/ folder using tests/composer.json
   - composer install --working-dir=./tests/
