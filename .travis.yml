@@ -31,4 +31,4 @@ script:
   - composer validate composer.json
 
   # Run the real tests finally
-  - "phpunit tests/"
+  - "phpunit tests/*.php"
