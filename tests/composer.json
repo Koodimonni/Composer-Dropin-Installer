@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "koodimonni/composer-dropin-installer": "dev-%%TRAVIS_BRANCH%%",
+        "koodimonni/composer-dropin-installer": "*",
         "koodimonni-language/fi": "*"
     },
     "extra": {

@@ -16,8 +16,8 @@ matrix:
 before_script:
   - composer self-update
 
-  # Give composer a custom branch so that we can avoid problems caused by travis branch
-  - sed -i -e "s|%%TRAVIS_BRANCH%%|$TRAVIS_BRANCH|g" tests/composer.json
+  # Give composer a random tag so that we can avoid problems caused by language pack constraints
+  - git tag 10.0
 
   # Copy dropin files into /tmp so that we can require it into composer.json used by tests
   - cp -r . /tmp/dropin-installer-repo
