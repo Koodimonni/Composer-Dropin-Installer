@@ -30,8 +30,22 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
    * Put a pull request if you find some other use cases for this.
    * these filenames are in lowcase intentionally!!
    */
-  public static $ignoreList = array(".ds_store",".git",".gitignore","composer.json","composer.lock"
-                                    ,"readme.md","readme.txt","license","phpunit.xml",".travis.yml");
+  public static $ignoreList = array(
+    ".ds_store",
+    ".git",
+    ".gitattributes",
+    ".gitignore",
+    "composer.json",
+    "composer.lock",
+    "readme.md",
+    "changelog",
+    "changelog.md",
+    "readme.txt",
+    "license",
+    "license.md",
+    "phpunit.xml",
+    ".travis.yml"
+  );
 
   // Cache results of dropin-paths into here and use it only from getter function getPaths()
   protected $paths;
