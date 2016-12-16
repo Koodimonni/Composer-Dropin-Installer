@@ -6,7 +6,7 @@ This composer plugin helps you to move your composer packaged files where you wa
 
 Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects. We just let composer install things and take it from there.
 
-I created this originally for installing multiple languages for wordpress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update wordpress languages with composer](https://wp-languages.github.io).
+I created this originally for installing multiple languages for WordPress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update WordPress languages with composer](https://wp-languages.github.io).
 
 ##How to use it
 ###Follow the baby steps
@@ -32,7 +32,7 @@ I created this originally for installing multiple languages for wordpress with c
 {
   "name": "koodimonni/wordpress",
   "type": "project",
-  "description": "Wordpress with composer languages using Koodimonni dropin installer",
+  "description": "WordPress with composer languages using Koodimonni dropin installer",
   "homepage": "http://github.com/koodimonni/composer-dropin-installer",
   "authors": [
     {
@@ -50,7 +50,7 @@ I created this originally for installing multiple languages for wordpress with c
   "repositories": [
     {
       "type": "composer",
-      "url": "http://wpackagist.org"
+      "url": "https://wpackagist.org"
     },
     {
       "type": "composer",
@@ -60,10 +60,10 @@ I created this originally for installing multiple languages for wordpress with c
   "require": {
     "php": ">=5.3.2",
 
-    "koodimonni/composer-dropin-installer": "0.2",
+    "koodimonni/composer-dropin-installer": "*",
 
     "johnpbloch/wordpress": "*",
-    "composer/installers": "v1.0.12",
+    "composer/installers": "~1.0",
     "vlucas/phpdotenv": "~1.0.6",
     
     
@@ -86,9 +86,9 @@ I created this originally for installing multiple languages for wordpress with c
       "htdocs/wp-content/languages/": ["type:wordpress-language"],
       "htdocs/wp-content/languages/plugins/": ["vendor:wordpress-plugin-language"],
       "htdocs/wp-content/languages/themes/": ["vendor:wordpress-theme-language"],
-      "htdocs/wp-content/plugins/": [
+      "htdocs/wp-content/": [
         "package:wpackagist-plugin/wp-redis:object-cache.php",
-        "package:wppackagist-plugin/wordpress-mu-domain-mapping:sunrise.php",
+        "package:wpackagist-plugin/wordpress-mu-domain-mapping:sunrise.php",
         "type:wordpress-dropin"]
     },
     "wordpress-install-dir": "htdocs/wordpress"
@@ -108,7 +108,7 @@ Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{file
 
 **Files** is optional and by default it will move all files.
 In some cases it would be nice to move just one file from the package.
-I found out that *Wordpress dropins* needed just that. Good example is this one: [Domain Mapping](https://wordpress.org/plugins/wordpress-mu-domain-mapping/) or object-cache.php.
+I found out that *WordPress dropins* needed just that. Good example is this one: [Domain Mapping](https://wordpress.org/plugins/wordpress-mu-domain-mapping/) or object-cache.php.
 
 ##Some Notices
 * Script works nicely together with composer/installers
