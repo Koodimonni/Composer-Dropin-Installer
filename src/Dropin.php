@@ -10,7 +10,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 
 #Subscribe to Package events
-use Composer\Script\PackageEvent;
+use Composer\Installer\PackageEvent;
 
 #For asking package about it's details
 use Composer\Package\PackageInterface;
@@ -83,7 +83,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   /**
    * Hook up this function to package install to move files defined in composer.json -> extra -> dropin-paths
    * Run this command as post-install-package
-   * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
+   * @param Composer\Installer\PackageEvent $event - Composer automatically tells information about itself for custom scripts
    */
   public function onPackageInstall(PackageEvent $event){
     //Get information about the package that was just installed
@@ -95,7 +95,7 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   /**
    * Hook up this function to package install to move files defined in composer.json -> extra -> dropin-paths
    * Run this command as post-install-package
-   * @param Composer\Script\PackageEvent $event - Composer automatically tells information about itself for custom scripts
+   * @param Composer\Installer\PackageEvent $event - Composer automatically tells information about itself for custom scripts
    */
   public function onPackageUpdate(PackageEvent $event){
     //TODO: Keep record of moved files and delete them on updates and in package deletion
@@ -326,3 +326,4 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     return in_array(strtolower($filename),self::$ignoreList);
   }
 }
+
