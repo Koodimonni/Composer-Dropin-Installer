@@ -65,8 +65,8 @@ I created this originally for installing multiple languages for WordPress with c
     "johnpbloch/wordpress": "*",
     "composer/installers": "~1.0",
     "vlucas/phpdotenv": "~1.0.6",
-    
-    
+
+
     "koodimonni-language/fi": "*",
     "koodimonni-language/et": "*",
     "koodimonni-language/ru_ru": "*",
@@ -130,6 +130,7 @@ phpunit.xml
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
 
 ##Changelog
+* 1.1.0 Replaced `Composer\Script\PackageEvent` with `Composer\Installer\PackageEvent`
 * 1.0.1 Updated tests to new repository https://wp-languages.github.io
 * 1.0 Stable release, updated to newer composer-plugin-api
 * 0.2.4 Fixes crashing when 'dropin-paths' is not defined in extra section.
