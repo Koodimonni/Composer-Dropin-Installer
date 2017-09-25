@@ -96,6 +96,21 @@ I created this originally for installing multiple languages for WordPress with c
 }
 ```
 
+## Moving v. copying files
+
+By default this dropin installer moves files from the source to the destination,
+which means the files disappear from the source.
+
+If you would prefer copying instead (which keeps the files at the source after
+installation) insert the following configuration to your `composer.json` `config`
+declarations:
+
+```json
+"config": {
+    "dropin-installer": "copy"
+}
+```
+
 ##But how about the impossible looking syntax?
 Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{files}"```
 

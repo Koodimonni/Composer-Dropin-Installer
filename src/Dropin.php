@@ -170,13 +170,27 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
       $src = "{$vendorDir}/{$info['package']}";
     }
 
+    $config = $this->composer->getPackage()->getConfig();
+    $shouldCopy = isset($config['dropin-installer']) && $config['dropin-installer'] === 'copy';
+
     $installFiles = self::getFilesToInstall($info);
-    $this->io->write("    Moving dropin files...\n");
-    if ($installFiles == "*") {
-      self::rmove($src,$dest);
+    if ($shouldCopy) {
+      $this->io->write("    Copying dropin files...\n");
+      if ($installFiles == "*") {
+        self::rcopy($src, $dest);
+      } else {
+        foreach ($installFiles as $file) {
+          self::copy("{$src}/{$file}", $dest);
+        }
+      }
     } else {
-      foreach($installFiles as $file) {
-        self::move("{$src}/{$file}",$dest);
+      $this->io->write("    Moving dropin files...\n");
+      if ($installFiles == "*") {
+        self::rmove($src, $dest);
+      } else {
+        foreach ($installFiles as $file) {
+          self::move("{$src}/{$file}", $dest);
+        }
       }
     }
   }
@@ -299,6 +313,62 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
           }
       }
       rename($src, "$dest/" . basename($src));
+  }
+  /**
+   * Recursively copy files from one directory to another
+   *
+   * @param string $src - Source of files being copied
+   * @param string $dest - Destination of files being copied
+   */
+  private static function rcopy($src, $dest){
+    // If source is not a directory stop processing
+    if(!is_dir($src)) {
+      echo "Source is not a directory";
+      return false;
+    }
+
+    // If the destination directory does not exist create it
+    if(!is_dir($dest)) {
+      if(!mkdir($dest,0777,true)) {
+        // If the destination directory could not be created stop processing
+        echo "Can't create destination path: {$dest}\n";
+        return false;
+      }
+    }
+
+    // Open the source directory to read in files
+    $i = new \DirectoryIterator($src);
+    foreach($i as $f) {
+      #Skip useless files&folders
+      if (self::isFileIgnored($f->getFilename())) continue;
+
+      if($f->isFile()) {
+        copy($f->getRealPath(), "$dest/" . $f->getFilename());
+      } else if(!$f->isDot() && $f->isDir()) {
+        self::rcopy($f->getRealPath(), "$dest/$f");
+        #unlink($f->getRealPath());
+      }
+    }
+    #We could Remove original directories but don't do it
+    #unlink($src);
+  }
+  /**
+   * Copy a file from one location to another.
+   *
+   * @param $src - File being copied
+   * @param $dest - Destinatin directory
+   */
+  private static function copy($src, $dest)
+  {
+    // If the destination directory does not exist create it
+    if(!is_dir($dest)) {
+      if(!mkdir($dest,0777,true)) {
+        // If the destination directory could not be created stop processing
+        echo "Can't create destination path: {$dest}\n";
+        return false;
+      }
+    }
+    copy($src, "$dest/" . basename($src));
   }
   /**
    * Returns type and information of dropin directive
