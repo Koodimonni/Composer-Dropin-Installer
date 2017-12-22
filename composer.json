@@ -24,5 +24,11 @@
     },
     "extra": {
         "class": "Koodimonni\\Composer\\Dropin"
+    },
+    "scripts": {
+        "test": [
+            "composer install --working-dir=./tests/move/ && vendor/bin/phpunit ./tests/move/*.php",
+            "composer install --working-dir=./tests/copy/ && vendor/bin/phpunit ./tests/copy/*.php"
+        ]
     }
 }

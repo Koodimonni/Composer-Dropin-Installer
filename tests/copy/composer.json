@@ -1,0 +1,38 @@
+{
+    "name": "koodimonni/composer-dropin-installer-tests",
+    "description": "composer.json for testing composer-dropin-installer",
+    "license": "WTFPL",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Onni Hakala",
+            "email": "onni@koodimonni.fi"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Koodimonni/Composer-Dropin-Installer"
+        },
+        {
+            "type": "path",
+            "url": "../testpkg"
+        },
+        {
+            "packagist": false
+        }
+    ],
+    "require": {
+        "koodimonni/composer-dropin-installer": "dev-master#%%TRAVIS_COMMIT%%",
+        "dropininternal/dropin-test-package": "dev-master"
+    },
+    "extra": {
+        "dropin-paths": {
+          "htdocs/": ["package:dropininternal/dropin-test-package"]
+        }
+    },
+    "config": {
+        "dropin-installer": "copy"
+    },
+    "minimum-stability": "dev"
+}
