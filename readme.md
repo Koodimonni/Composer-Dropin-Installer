@@ -154,6 +154,7 @@ installation methods.
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
 
 ##Changelog
+* 1.2 Added ability to copy files instead of moving them. Thanks @rask for contributing!
 * 1.1.0 Replaced `Composer\Script\PackageEvent` with `Composer\Installer\PackageEvent`
 * 1.0.1 Updated tests to new repository https://wp-languages.github.io
 * 1.0 Stable release, updated to newer composer-plugin-api
