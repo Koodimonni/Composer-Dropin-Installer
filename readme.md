@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer) [![Latest Stable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/stable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Total Downloads](https://poser.pugx.org/koodimonni/composer-dropin-installer/downloads)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Latest Unstable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/unstable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![License](https://poser.pugx.org/koodimonni/composer-dropin-installer/license)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
 
-This composer plugin helps you to move your composer packaged files where you want them to be.
+This composer plugin helps you to move or copy your composer packaged files where you want them to be.
 
 Composer only allows you to install full directories into their own directories. There's really useful [composer/installers](https://github.com/composer/installers) for custom installation paths but it overwrites everything in folder and doesn't allow coexist of two or more projects. We just let composer install things and take it from there.
 
@@ -96,6 +96,21 @@ I created this originally for installing multiple languages for WordPress with c
 }
 ```
 
+## Moving v. copying files
+
+By default this dropin installer moves files from the source to the destination,
+which means the files disappear from the source.
+
+If you would prefer copying instead (which keeps the files at the source after
+installation) insert the following configuration to your `composer.json` `config`
+declarations:
+
+```json
+"config": {
+    "dropin-installer": "copy"
+}
+```
+
 ##But how about the impossible looking syntax?
 Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{files}"```
 
@@ -125,6 +140,15 @@ license
 phpunit.xml
 ```
 * Script requires unix filesystem (OS X,Linux)
+
+## Testing
+
+Run PHPUnit tests with
+
+    $ composer test
+
+Tests are run inside the `tests/` directory where two dummy Composer projects are used to test dropin
+installation methods.
 
 ##Todo
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
