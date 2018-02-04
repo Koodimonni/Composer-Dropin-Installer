@@ -33,5 +33,8 @@ script:
   # Sanity composer check
   - composer validate composer.json
 
+  # Install phpunit etc
+  - composer install
+
   # Run the real tests finally
   - composer test
