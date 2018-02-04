@@ -2,6 +2,7 @@
 composer.lock
 
 # Stuff from tests
+tests/htdocs
 tests/move/htdocs
 tests/copy/htdocs
 tests/move/vendor

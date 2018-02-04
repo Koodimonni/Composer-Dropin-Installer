@@ -6,6 +6,7 @@ language: php
 php:
   - '5.6'
   - '7.0'
+  - '7.1'
   - hhvm
   - nightly
 
@@ -33,5 +34,4 @@ script:
   - composer validate composer.json
 
   # Run the real tests finally
-  - "vendor/bin/phpunit tests/move/*.php"
-  - "vendor/bin/phpunit tests/copy/*.php"
+  - composer test
