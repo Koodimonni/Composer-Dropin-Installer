@@ -54,12 +54,32 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
   protected $io;
 
   /**
-   * Composer plugin default behaviour
+   * Apply plugin modifications to Composer
+   * @param Composer\Composer $composer - Composer
+   * @param Composer\IO\IOInterface $io - Input/Output helper interface
    */
   public function activate(Composer $composer, IOInterface $io)
   {
       $this->composer = $composer;
       $this->io = $io;
+  }
+
+  /**
+   * Remove any hooks from Composer
+   * @param Composer\Composer $composer - Composer
+   * @param Composer\IO\IOInterface $io - Input/Output helper interface
+   */
+  public function deactivate(Composer $composer, IOInterface $io)
+  {
+  }
+
+  /**
+   * Prepare the plugin to be uninstalled
+   * @param Composer\Composer $composer - Composer
+   * @param Composer\IO\IOInterface $io - Input/Output helper interface
+   */
+  public function uninstall(Composer $composer, IOInterface $io)
+  {
   }
 
   /**
