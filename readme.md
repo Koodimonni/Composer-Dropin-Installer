@@ -1,6 +1,10 @@
 # Composer Dropin installer
 
-[![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer) [![Latest Stable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/stable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Total Downloads](https://poser.pugx.org/koodimonni/composer-dropin-installer/downloads)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![Latest Unstable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/unstable)](https://packagist.org/packages/koodimonni/composer-dropin-installer) [![License](https://poser.pugx.org/koodimonni/composer-dropin-installer/license)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
+[![Build Status](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer.svg?branch=master)](https://travis-ci.org/Koodimonni/Composer-Dropin-Installer)
+[![Latest Stable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/stable)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
+[![Total Downloads](https://poser.pugx.org/koodimonni/composer-dropin-installer/downloads)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
+[![Latest Unstable Version](https://poser.pugx.org/koodimonni/composer-dropin-installer/v/unstable)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
+[![License](https://poser.pugx.org/koodimonni/composer-dropin-installer/license)](https://packagist.org/packages/koodimonni/composer-dropin-installer)
 
 This composer plugin helps you to move or copy your composer packaged files where you want them to be.
 
@@ -8,16 +12,20 @@ Composer only allows you to install full directories into their own directories.
 
 I created this originally for installing multiple languages for WordPress with composer. I needed to have multiple packages living in same directory ```htdocs/wp-content/languages```. See how you can [update WordPress languages with composer](https://wp-languages.github.io).
 
-##How to use it
-###Follow the baby steps
+## How to use it
+
+### Follow the baby steps
 
 1.Require "koodimonni/composer-dropin-installer": "*" or "dev-master"
+
 ```json
 "require": {
     "koodimonni/composer-dropin-installer": "dev-master"
   }
 ```
+
 2.Add custom paths into your composer.json -> extra -> dropin-paths.
+
 ```json
 "extra": {
     "dropin-paths": {
@@ -25,9 +33,11 @@ I created this originally for installing multiple languages for WordPress with c
     }
   }
 ```
+
 3.Enjoy nice dependency management by composer and install things where the fuck you want them to be.
 
 ### End result looks something like this
+
 ```json
 {
   "name": "koodimonni/wordpress",
@@ -96,7 +106,7 @@ I created this originally for installing multiple languages for WordPress with c
 }
 ```
 
-## Moving v. copying files
+## Moving vs. copying files
 
 By default this dropin installer moves files from the source to the destination,
 which means the files disappear from the source.
@@ -111,23 +121,28 @@ declarations:
 }
 ```
 
-##But how about the impossible looking syntax?
-Dropin syntax consists from four parts: ```"{path}": "{directive}:{target}:{files}"```
+## But how about the impossible looking syntax?
+
+Dropin syntax consists from four parts: `"{path}": "{directive}:{target}:{files}"`
 
 **Path** is relative path to destination folder.
 
 **Directive** is one of:
-* package -  eg. package:koodimonni-language/fi
-* vendor - eg vendor:koodimonni-language
-* type - eg. type:wordpress-language
+
+* package - e.g. `package:koodimonni-language/fi`
+* vendor - e.g. `vendor:koodimonni-language`
+* type - e.g. `type:wordpress-language`
 
 **Files** is optional and by default it will move all files.
+
 In some cases it would be nice to move just one file from the package.
 I found out that *WordPress dropins* needed just that. Good example is this one: [Domain Mapping](https://wordpress.org/plugins/wordpress-mu-domain-mapping/) or object-cache.php.
 
-##Some Notices
+## Some Notices
+
 * Script works nicely together with composer/installers
 * I'm ignoring these files automatically:
+
 ```
 .DS_store
 .git
@@ -139,21 +154,26 @@ readme.txt
 license
 phpunit.xml
 ```
+
 * Script requires unix filesystem (OS X,Linux)
 
 ## Testing
 
 Run PHPUnit tests with
 
-    $ composer test
+```
+composer test
+```
 
 Tests are run inside the `tests/` directory where two dummy Composer projects are used to test dropin
 installation methods.
 
-##Todo
+## Todo
+
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
 
-##Changelog
+## Changelog
+
 * 1.2 Added ability to copy files instead of moving them. Thanks @rask for contributing!
 * 1.1.0 Replaced `Composer\Script\PackageEvent` with `Composer\Installer\PackageEvent`
 * 1.0.1 Updated tests to new repository https://wp-languages.github.io
