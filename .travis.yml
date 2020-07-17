@@ -15,8 +15,6 @@ matrix:
     - php: nightly
 
 before_script:
-  - composer self-update
-
   # We use the same repo straight from github because it required lesser amount of hacks
   # Here we force the same current git commit id for composer
   - sed -i -e "s|%%TRAVIS_COMMIT%%|$TRAVIS_COMMIT|g" tests/move/composer.json
@@ -31,10 +29,10 @@ script:
   - php -d error_reporting=32767 -l src/Dropin.php
 
   # Sanity composer check
-  - composer validate composer.json
+  - composer validate --strict
 
   # Install phpunit etc
-  - composer install
+  - composer install --prefer-dist
 
   # Run the real tests finally
   - composer test
