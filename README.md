@@ -186,4 +186,4 @@ installation methods.
 * 0.1 Initial release
 
 ## Finally
-Thanks to @seldaek for all of this hard work with packagist.org!
+Thanks to @Seldaek for all of this hard work with packagist.org!
