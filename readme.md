@@ -184,3 +184,6 @@ installation methods.
 * 0.2.1 Bug fixes
 * 0.2 Change from custom composer script to composer plugin
 * 0.1 Initial release
+
+## Finally
+Thanks to @seldaek for all of this hard work with packagist.org!
