@@ -16,17 +16,13 @@ matrix:
   allow_failures:
     - php: nightly
 
-before_script:
-  # Install test run into tests/ folder using tests/composer.json
-  - composer install --working-dir=./tests/move/
-  - composer install --working-dir=./tests/copy/
+before_install:
+  # Sanity composer check
+  - composer validate --strict
 
 script:
   # Sanity php syntax check
-  - php -d error_reporting=32767 -l src/Dropin.php
-
-  # Sanity composer check
-  - composer validate --strict
+  - php -l src/Dropin.php
 
   # Install phpunit etc
   - composer install --prefer-dist

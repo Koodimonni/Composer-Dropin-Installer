@@ -10,8 +10,8 @@
     ],
     "repositories": [
         {
-            "type": "path",
-            "url": "../../"
+            "type": "vcs",
+            "url": "file://../../"
         },
         {
             "type": "path",
