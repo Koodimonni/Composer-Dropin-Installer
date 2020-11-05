@@ -1,5 +1,4 @@
 {
-    "name": "koodimonni/composer-dropin-installer-tests",
     "description": "composer.json for testing composer-dropin-installer",
     "license": "WTFPL",
     "type": "project",
@@ -12,7 +11,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/Koodimonni/Composer-Dropin-Installer"
+            "url": "../../"
         },
         {
             "type": "composer",
