@@ -10,7 +10,7 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
+            "type": "path",
             "url": "../../"
         },
         {
@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "koodimonni/composer-dropin-installer": "dev-master#%%TRAVIS_COMMIT%%",
+        "koodimonni/composer-dropin-installer": "*",
         "dropininternal/dropin-test-package": "dev-master"
     },
     "extra": {
