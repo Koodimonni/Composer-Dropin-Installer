@@ -31,5 +31,6 @@
           "htdocs/wp-content/languages/plugins": ["vendor:koodimonni-plugin-language"],
           "htdocs/wp-content/languages/themes": ["vendor:koodimonni-theme-language"]
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
