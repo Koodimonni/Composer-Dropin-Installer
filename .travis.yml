@@ -15,6 +15,7 @@ jobs:
 
 before_install:
   - git fetch --unshallow
+
   # Sanity composer check
   - composer validate --strict
 
