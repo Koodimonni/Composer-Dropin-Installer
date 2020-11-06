@@ -28,11 +28,11 @@
     },
     "scripts": {
         "test:move": [
-            "@composer update --working-dir=./tests/move/",
+            "@composer update --working-dir=./tests/move/ -vvv",
             "phpunit --verbose ./tests/move/*.php"
         ],
         "test:copy": [
-            "@composer update --working-dir=./tests/copy/",
+            "@composer update --working-dir=./tests/copy/ -vvv",
             "phpunit --verbose ./tests/copy/*.php"
         ],
         "test": [
