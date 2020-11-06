@@ -1,5 +1,4 @@
 {
-    "name": "koodimonni/composer-dropin-installer-tests",
     "description": "composer.json for testing composer-dropin-installer",
     "license": "WTFPL",
     "type": "project",
@@ -11,8 +10,8 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/Koodimonni/Composer-Dropin-Installer"
+            "type": "git",
+            "url": "../../.git"
         },
         {
             "type": "composer",
@@ -23,7 +22,7 @@
         }
     ],
     "require": {
-        "koodimonni/composer-dropin-installer": "dev-master#%%TRAVIS_COMMIT%%",
+        "koodimonni/composer-dropin-installer": "*",
         "koodimonni-language/fi": "*"
     },
     "extra": {
@@ -32,5 +31,6 @@
           "htdocs/wp-content/languages/plugins": ["vendor:koodimonni-plugin-language"],
           "htdocs/wp-content/languages/themes": ["vendor:koodimonni-theme-language"]
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
