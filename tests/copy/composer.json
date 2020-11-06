@@ -11,7 +11,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "file://../../"
+            "url": "file://../../.git"
         },
         {
             "type": "path",
