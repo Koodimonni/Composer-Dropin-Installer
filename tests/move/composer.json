@@ -10,7 +10,7 @@
     ],
     "repositories": [
         {
-            "type": "vcs",
+            "type": "git",
             "url": "file://../../"
         },
         {
