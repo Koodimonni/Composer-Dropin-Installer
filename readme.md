@@ -149,9 +149,13 @@ I found out that *WordPress dropins* needed just that. Good example is this one:
 .gitignore
 composer.json
 composer.lock
+readme
 readme.md
 readme.txt
+changelog.txt
 license
+license.md
+license.txt
 phpunit.xml
 ```
 
@@ -173,7 +177,8 @@ installation methods.
 * Handle deletions on removal and on update. This could be easily done with json-database in [vendor-dir]
 
 ## Changelog
-
+* 1.4 Ignore `readme` `readme.txt` `changelog.txt` & `license.txt` files automatically too thanks @ocean90!
+* 1.3 Support for composer 2.0
 * 1.2 Added ability to copy files instead of moving them. Thanks @rask for contributing!
 * 1.1.0 Replaced `Composer\Script\PackageEvent` with `Composer\Installer\PackageEvent`
 * 1.0.1 Updated tests to new repository https://wp-languages.github.io
