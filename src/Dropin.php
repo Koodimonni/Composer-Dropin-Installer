@@ -37,12 +37,15 @@ class Dropin implements PluginInterface, EventSubscriberInterface {
     ".gitignore",
     "composer.json",
     "composer.lock",
+    "readme",
     "readme.md",
+    "readme.txt",
     "changelog",
     "changelog.md",
-    "readme.txt",
+    "changelog.txt",
     "license",
     "license.md",
+    "license.txt",
     "phpunit.xml",
     ".travis.yml"
   );
